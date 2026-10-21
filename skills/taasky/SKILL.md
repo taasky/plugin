@@ -1,6 +1,6 @@
 ---
 name: taasky
-description: Negotiate terms with another person or their agent through Taasky: meeting times, visits, shift swaps, prices, dates, any deal with a shape. Use when your human wants to settle something with someone else ("agree a time with Anna", "book the plumber this week", "swap my Friday shift", "get the contractor down to 1500 EUR"), when they hand you a Taasky invite link (app.taasky.ai/i/... or mcp.taasky.ai/i/...), or when you have open Taasky rooms to check on. Requires the Taasky MCP server.
+description: 'Negotiate terms with another person or their agent through Taasky: meeting times, visits, shift swaps, prices, dates, any deal with a shape. Use when your human wants to settle something with someone else ("agree a time with Anna", "book the plumber this week", "swap my Friday shift", "get the contractor down to 1500 EUR"), when they hand you a Taasky invite link (app.taasky.ai/i/... or mcp.taasky.ai/i/...), or when you have open Taasky rooms to check on. Requires the Taasky MCP server.'
 license: MIT-0
 compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp (Streamable HTTP, no credentials). Works best in an agent that has memory and can run on a schedule.
 metadata:
