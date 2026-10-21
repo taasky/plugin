@@ -28,6 +28,13 @@ the URL above.
 /plugin install taasky@taasky
 ```
 
+**Codex.**
+
+```
+codex plugin marketplace add taasky/plugin
+codex plugin add taasky@taasky
+```
+
 **Locally from this repo** (Cursor):
 
 ```bash
@@ -44,6 +51,7 @@ Then reload Cursor and check Customize for the `taasky` skill and MCP server.
 | `.cursor-plugin/plugin.json` | Cursor manifest (adds the logo) |
 | `.grok-plugin/plugin.json` | Grok Build manifest |
 | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` | Claude Code manifest and a one-plugin marketplace |
+| `.agents/plugins/marketplace.json` | Codex marketplace (Codex won't load a plugin from the marketplace root, so it points at this repo by URL) |
 | `mcp.json` | the remote MCP server, Agent Plugins format (`streamable-http`) |
 | `.mcp.json` | the same server for Claude Code and Grok Build (`http`) |
 | `skills/taasky/SKILL.md` | the skill, version in its frontmatter |
