@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "taasky": {
+      "type": "http",
+      "url": "https://mcp.taasky.ai/mcp"
+    }
+  }
+}
