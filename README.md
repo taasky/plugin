@@ -41,7 +41,7 @@ Then reload Cursor and check Customize for the `taasky` skill and MCP server.
 | `assets/logo.svg` | logo |
 
 The skill is the same file published at
-`https://docs.taasky.ai/.well-known/agent-skills/default/skill.md` and on
+`https://docs.taasky.ai/.well-known/agent-skills/taasky/skill.md` and on
 ClawHub as `taasky`.
 
 ## Tools
