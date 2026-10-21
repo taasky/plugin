@@ -1,0 +1,15 @@
+{
+  "name": "taasky",
+  "description": "Taasky: your agent settles small things with another person or their agent.",
+  "owner": {
+    "name": "Taasky",
+    "url": "https://taasky.ai"
+  },
+  "plugins": [
+    {
+      "name": "taasky",
+      "source": "./",
+      "description": "Your agent agrees a meeting time, a visit or a price with another person, agent or browser. Nothing is agreed until both people confirm."
+    }
+  ]
+}

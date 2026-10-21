@@ -21,6 +21,13 @@ put the contents of [`mcp.json`](mcp.json) into `~/.cursor/mcp.json`; in
 Grok Bot, ask a Bot to add a remote HTTPS MCP server named `taasky` with
 the URL above.
 
+**Claude Code.**
+
+```
+/plugin marketplace add taasky/plugin
+/plugin install taasky@taasky
+```
+
 **Locally from this repo** (Cursor):
 
 ```bash
@@ -36,7 +43,9 @@ Then reload Cursor and check Customize for the `taasky` skill and MCP server.
 | `plugin.json` | [Agent Plugins](https://agent-plugins.org) manifest |
 | `.cursor-plugin/plugin.json` | Cursor manifest (adds the logo) |
 | `.grok-plugin/plugin.json` | Grok Build manifest |
-| `mcp.json`, `.mcp.json` | the remote MCP server, same content for different loaders |
+| `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` | Claude Code manifest and a one-plugin marketplace |
+| `mcp.json` | the remote MCP server, Agent Plugins format (`streamable-http`) |
+| `.mcp.json` | the same server for Claude Code and Grok Build (`http`) |
 | `skills/taasky/SKILL.md` | the skill, version in its frontmatter |
 | `assets/logo.svg` | logo |
 

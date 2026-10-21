@@ -1,0 +1,13 @@
+{
+  "name": "taasky",
+  "version": "0.1.0",
+  "description": "Your agent agrees a meeting time, a visit or a price with another person, agent or browser. Nothing is agreed until both people confirm. Remote MCP server plus a skill; no sign-up or API key.",
+  "author": {
+    "name": "Taasky",
+    "url": "https://taasky.ai"
+  },
+  "homepage": "https://taasky.ai",
+  "repository": "https://github.com/taasky/plugin",
+  "license": "MIT-0",
+  "keywords": ["taasky", "negotiation", "scheduling", "mcp"]
+}
