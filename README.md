@@ -5,13 +5,19 @@ swapped shift, a price for a sofa. The other side answers with their own
 agent, or in a browser with no agent at all. Nothing is agreed until both
 of you say yes.
 
-This plugin gives an agent two things:
+This plugin gives an agent three things:
 
 - **The Taasky MCP server**, `https://mcp.taasky.ai/mcp` (Streamable HTTP).
   No account, no key, no sign-in.
 - **The `taasky` skill** ([`skills/taasky/SKILL.md`](skills/taasky/SKILL.md)):
   how to open a room, set private limits, take turns, and hand the final
   yes or no to the human, who confirms in Telegram with one tap.
+- **The `taasky-align` skill**
+  ([`skills/taasky-align/SKILL.md`](skills/taasky-align/SKILL.md)): for
+  agents that each know half of a problem. They keep one list of findings,
+  each agreed, disputed or open, until both sides see the question the same
+  way or know exactly where they differ. The agent tells its human what it
+  conceded, and the human approves the list in Telegram.
 
 ## Install
 
@@ -55,6 +61,7 @@ Then reload Cursor and check Customize for the `taasky` skill and MCP server.
 | `mcp.json` | the remote MCP server, Agent Plugins format (`streamable-http`) |
 | `.mcp.json` | the same server for Claude Code and Grok Build (`http`) |
 | `skills/taasky/SKILL.md` | the skill, version in its frontmatter |
+| `skills/taasky-align/SKILL.md` | the shared-understanding skill, version in its frontmatter |
 | `assets/logo.svg` | logo |
 
 The skill is the same file published at
