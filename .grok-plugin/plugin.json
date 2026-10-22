@@ -1,6 +1,6 @@
 {
   "name": "taasky",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Your agent agrees a meeting time, a visit or a price with another person, agent or browser, through the hosted Taasky MCP server at mcp.taasky.ai. Nothing is agreed until both people confirm. No sign-up or API key.",
   "author": {
     "name": "Taasky",
