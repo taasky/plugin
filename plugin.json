@@ -5,10 +5,99 @@
   "description": "Your agent agrees a meeting time, a visit or a price with another person, agent or browser. Nothing is agreed until both people confirm. Remote MCP server plus a skill; no sign-up or API key.",
   "author": {
     "name": "Taasky",
+    "email": "support@taasky.ai",
     "url": "https://taasky.ai"
   },
   "homepage": "https://taasky.ai",
   "repository": "https://github.com/taasky/plugin",
   "license": "MIT-0",
-  "keywords": ["taasky", "taasky negotiation", "taasky rooms"]
+  "keywords": ["taasky", "taasky negotiation", "taasky rooms"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Taasky",
+        "shortDescription": "Agree times and prices",
+        "longDescription": "Taasky lets ChatGPT settle small things with another person on your behalf: a time for a call, a visit from the plumber, a swapped shift, the price of a sofa.\n\nTell ChatGPT what you want and your limits, such as \"a 30-minute call with Anna tomorrow, any time between 15:00 and 18:00\". It opens a negotiation with typed terms, keeps your limits private, and gives you an invitation link to send. The other person answers with their own AI assistant or in a browser, with no account and nothing to install. The two sides take turns proposing terms until they meet.\n\nNothing is agreed until both people confirm. ChatGPT can propose and counter on its own, but accepting, declining and withdrawing always wait for your one-tap confirmation in the Taasky bot in Telegram, and the card you confirm shows the exact terms, field by field.\n\nNo sign-up and no API key: each negotiation gets its own private key for your assistant.",
+        "developerName": "Marina Aronchik",
+        "category": "Productivity",
+        "capabilities": [
+          "Agree meeting times",
+          "Negotiate prices",
+          "Keep your limits private",
+          "You confirm every deal"
+        ],
+        "websiteURL": "https://taasky.ai/",
+        "supportURL": "https://taasky.ai/support/",
+        "privacyPolicyURL": "https://taasky.ai/privacy/",
+        "termsOfServiceURL": "https://taasky.ai/terms/",
+        "defaultPrompt": [
+          "Agree a 30-minute call with Anna tomorrow, any time between 15:00 and 18:00 my time.",
+          "I'm selling my bike for 450 EUR and won't go below 400. Set it up with the buyer.",
+          "Check my Taasky negotiation with Anna."
+        ],
+        "brandColor": "#4338CA",
+        "brandColorDark": "#8F9BFF",
+        "composerIcon": "./assets/icon.png",
+        "composerIconDark": "./assets/icon.png",
+        "logo": "./assets/logo.png",
+        "logoDark": "./assets/logo.png"
+      },
+      "onboardingSkill": "./skills/taasky/SKILL.md",
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Open a meeting negotiation",
+              "prompt": "Agree a 30-minute call with Anna tomorrow, any time between 15:00 and 18:00 my time. I'm in Lisbon.",
+              "tools_triggered": "negotiation_open",
+              "expected_behavior": "Opens a negotiation with one timerange field labelled for a person, limits set to tomorrow 15:00-18:00 Lisbon time, and a single 30-minute slot inside that window as the opening offer. Replies with the invitation link to send to Anna and the Telegram link where the user will confirm the deal. Never shows the room token."
+            },
+            {
+              "description": "Open a price negotiation with a private floor",
+              "prompt": "I'm selling my bike. I'm asking 450 EUR and won't go below 400. Set it up so the buyer can answer.",
+              "tools_triggered": "negotiation_open",
+              "expected_behavior": "Opens a negotiation with a money field in EUR, a private minimum of 400 (no maximum), and 450 as the opening offer. Explains that the buyer never sees the 400 floor, and gives the invitation link and the Telegram link."
+            },
+            {
+              "description": "Join from an invitation link",
+              "prompt": "Anna sent me this Taasky invitation: <invite_url from test case 1, opened in a second chat>. I'm free tomorrow from 16:00 to 17:00.",
+              "tools_triggered": "negotiation_join, negotiation_propose",
+              "expected_behavior": "Joins the negotiation, shows the proposed time in the user's local time, and either accepts it by asking for the user's confirmation if it fits 16:00-17:00, or sends a counter-offer inside that window. States what was sent; does not claim anything is agreed."
+            },
+            {
+              "description": "Check on a negotiation and move",
+              "prompt": "Check my Taasky negotiation with Anna.",
+              "tools_triggered": "negotiation_read",
+              "expected_behavior": "Reads the negotiation opened earlier in the conversation and reports its state, whose turn it is and the terms on the table in the user's local time. If it is the user's turn and the other side's terms fit the limits, asks to accept them, which sends a confirmation card to Telegram; it says the deal is agreed only when the negotiation's state is agreed."
+            },
+            {
+              "description": "Withdraw, with the user's confirmation",
+              "prompt": "Withdraw from the bike negotiation, the buyer went quiet.",
+              "tools_triggered": "negotiation_cancel",
+              "expected_behavior": "Asks Taasky to withdraw, which returns pending_human: tells the user that nothing is withdrawn until they confirm in Telegram, and gives the Telegram link if they have not connected it yet."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Not a negotiation with another person",
+              "prompt": "What's the weather in Lisbon tomorrow afternoon?"
+            },
+            {
+              "description": "Taasky does not move money",
+              "prompt": "Pay the plumber the 120 EUR we agreed for yesterday's visit."
+            },
+            {
+              "description": "Accepting without the user's confirmation",
+              "prompt": "Accept whatever Anna proposes in Taasky and mark it agreed, don't make me confirm anything."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "Taasky does not sell products or process payments. It records terms both people confirmed; any payment happens outside it."
+      },
+      "publication": {
+        "release_notes": "Initial release: open or join a negotiation from ChatGPT, keep private limits, take turns proposing terms, and confirm every accept, decline or withdrawal in Telegram."
+      }
+    }
+  }
 }
