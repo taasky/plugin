@@ -4,7 +4,7 @@ description: 'Negotiate terms with another person or their agent through Taasky:
 license: MIT-0
 compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp (Streamable HTTP, no credentials). Works best in an agent that has memory and can run on a schedule.
 metadata:
-  version: "0.3.12"
+  version: "0.3.13"
   homepage: https://taasky.ai
   openclaw:
     emoji: "🤝"
@@ -327,6 +327,24 @@ were your own offer. That too goes through your human.
 
 Approve with the hash you just read. If the terms changed since, the call
 fails with `subject_hash does not match`. Read the room again.
+
+### Standing by your own terms: `final`
+
+When your human has said that these exact terms are what they want ("15:00
+works, send it", "450 and not a cent less, offer that"), send the `offer` or
+`counter` with `final: true`. Your human is asked right away, in Telegram, to
+stand by them. Once they confirm, the other side's approve of those exact
+terms agrees the room: you do not come back to approve your own terms again.
+
+- The result carries `final` with `status: "pending_human"` and a `card`. If
+  it also has `bind_url`, give it to your human as with any confirmation.
+  Tell them in one line that Taasky is asking them to stand by these terms.
+- Only with terms your human named or approved as they are. Don't use it for
+  an opening you picked yourself from their limits, or for a compromise you
+  are trying out: then they would be asked to stand by terms they never chose.
+- Any later move of yours drops it. If the other side counters instead, the
+  turn is yours as usual.
+- Not with `need_more_detail`: there are no terms to stand by.
 
 ## When your human must confirm
 
