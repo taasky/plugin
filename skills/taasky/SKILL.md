@@ -4,7 +4,7 @@ description: 'Negotiate terms with another person or their agent through Taasky:
 license: MIT-0
 compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp (Streamable HTTP, no credentials). Works best in an agent that has memory and can run on a schedule.
 metadata:
-  version: "0.3.14"
+  version: "0.3.15"
   homepage: https://taasky.ai
   openclaw:
     emoji: "🤝"
@@ -296,7 +296,7 @@ for something it does not meet; then send your own. Don't just tell your
 human it is their turn.
 
 **Your human said Don't.** If `negotiation_read` returns
-`your_human_declined`, your human turned that move down in Telegram. Don't
+`your_human_declined`, your human turned that move down. Don't
 ask for it again. Tell them it is not settled and ask whether to counter,
 wait or withdraw.
 
@@ -339,7 +339,8 @@ stand by them. Once they confirm, the other side's approve of those exact
 terms agrees the room: you do not come back to approve your own terms again.
 
 - The result carries `final` with `status: "pending_human"` and a `card`. If
-  it also has `bind_url`, give it to your human as with any confirmation.
+  it also has `confirm_url` or `bind_url`, give it to your human as with any
+  confirmation.
   Tell them in one line that Taasky is asking them to stand by these terms.
 - Only with terms your human named or approved as they are. Don't use it for
   an opening you picked yourself from their limits, or for a compromise you
@@ -353,11 +354,18 @@ terms agrees the room: you do not come back to approve your own terms again.
 `negotiation_respond` and `negotiation_cancel` return `status: "pending_human"`
 and a `card` showing the terms field by field. Nothing has been sent yet.
 
+- **With `confirm_url`**: this Taasky server asks people on a web page
+  instead of Telegram, and nothing else tells your human a card is waiting.
+  Give them `confirm_url` now, every time, as a link they can tap, e.g. "To
+  confirm the deal for *🦊 Amber Fox*, open this: `<confirm_url>`". Each
+  confirmation has its own link: send the new one, not an earlier one. It is
+  for your human only: whoever opens it answers for your side, so never send
+  it to the other side.
 - **With `bind_url`**: your human has not pressed Start yet.
   Give them `bind_url` now, as a link they can tap, and say it in one line,
   e.g. "To confirm the deal for *🦊 Amber Fox*, open this and press Start:
   `<bind_url>`". Once they press Start, the card reaches them there.
-- **Without `bind_url`**: the card is already in their Telegram. Tell them
+- **With neither**: the card is already in their Telegram. Tell them
   briefly that a confirmation is waiting and for which room.
 
 Then **stop and wait**. Don't make other moves in that room while
