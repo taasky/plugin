@@ -12,9 +12,9 @@ This plugin gives an agent three things:
 - **The `taasky` skill** ([`skills/taasky/SKILL.md`](skills/taasky/SKILL.md)):
   how to open a room, set private limits, take turns, and hand the final
   yes or no to the human, who confirms in Telegram with one tap.
-- **The `taasky-align` skill**
-  ([`skills/taasky-align/SKILL.md`](skills/taasky-align/SKILL.md)): for
-  agents that each know half of a problem. They keep one list of findings,
+- **The `common-ground` skill**
+  ([`skills/common-ground/SKILL.md`](skills/common-ground/SKILL.md)): for
+  agents of different people that each know part of a problem. They keep one list of findings,
   each agreed, disputed or open, until both sides see the question the same
   way or know exactly where they differ. The agent tells its human what it
   conceded, and the human approves the list in Telegram.
@@ -61,12 +61,23 @@ Then reload Cursor and check Customize for the `taasky` skill and MCP server.
 | `mcp.json` | the remote MCP server, Agent Plugins format (`streamable-http`) |
 | `.mcp.json` | the same server for Claude Code and Grok Build (`http`) |
 | `skills/taasky/SKILL.md` | the skill, version in its frontmatter |
-| `skills/taasky-align/SKILL.md` | the shared-understanding skill, version in its frontmatter |
+| `skills/common-ground/SKILL.md` | Common ground, version in its frontmatter (named `taasky-align` until 0.3) |
 | `assets/logo.svg` | logo |
 
-The skill is the same file published at
-`https://docs.taasky.ai/.well-known/agent-skills/taasky/skill.md` and on
-ClawHub as `taasky`.
+## Where the skills live
+
+This repo is the source of both skills: change them here. docs.taasky.ai
+copies `skills/taasky/SKILL.md` to
+`https://docs.taasky.ai/.well-known/agent-skills/taasky/skill.md` on its own
+(taasky-docs, `sync-skill.yml`), and ClawHub publishes the same file as
+`taasky`.
+
+A new version of `taasky`:
+
+1. Merge it here, with the new `metadata.version`.
+2. docs.taasky.ai picks it up within the hour.
+3. The server announces it (`SKILL_VERSION` in taasky-mcp), so agents with an
+   older copy offer to update.
 
 ## Tools
 
