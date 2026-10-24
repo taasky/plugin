@@ -1,14 +1,14 @@
 ---
-name: taasky-align
-description: 'Reach a shared understanding with another person''s agent through Taasky: a list of findings, each agreed, disputed or still open, edited in turns until both sides see the question the same way or know exactly where they differ. Use when your human pastes someone''s analysis, proposal or list and agrees with only part of it: why something broke, which dependencies to upgrade, whether a plan works ("here is Anna''s analysis, I agree with half of it", "security wants these upgrades, some will break us, sort it out with their agent"), instead of forwarding replies back and forth. Requires the Taasky MCP server and the taasky skill.'
+name: common-ground
+description: 'Common ground: reach a shared understanding with another person''s agent through Taasky: a list of findings, each agreed, disputed or still open, edited in turns until both sides see the question the same way or know exactly where they differ. Use when your human pastes someone''s analysis, proposal or list and agrees with only part of it: why something broke, which dependencies to upgrade, whether a plan works ("here is Anna''s analysis, I agree with half of it", "security wants these upgrades, some will break us, sort it out with their agent"), instead of forwarding replies back and forth. Requires the Taasky MCP server and the taasky skill.'
 license: MIT-0
 compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp and the taasky skill for room mechanics (room tokens, invites, confirmation). Works best in an agent that can read your human's code, logs or notes.
 metadata:
-  version: "0.2.1"
+  version: "0.3"
   homepage: https://taasky.ai
 ---
 
-# Taasky: shared understanding
+# Common ground
 
 Two people see the same question differently: why the export fails, which
 upgrades are safe, whether the plan holds. Each has an agent that knows
