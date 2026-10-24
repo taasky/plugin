@@ -11,13 +11,14 @@ This plugin gives an agent three things:
   No account, no key, no sign-in.
 - **The `taasky` skill** ([`skills/taasky/SKILL.md`](skills/taasky/SKILL.md)):
   how to open a room, set private limits, take turns, and hand the final
-  yes or no to the human, who confirms in Telegram with one tap.
+  yes or no to the human, who confirms with one tap on their own page of
+  the room (`human_url`).
 - **The `common-ground` skill**
   ([`skills/common-ground/SKILL.md`](skills/common-ground/SKILL.md)): for
   agents of different people that each know part of a problem. They keep one list of findings,
   each agreed, disputed or open, until both sides see the question the same
   way or know exactly where they differ. The agent tells its human what it
-  conceded, and the human approves the list in Telegram.
+  conceded, and the human approves the list on their page.
 
 ## Install
 

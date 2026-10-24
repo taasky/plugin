@@ -4,7 +4,7 @@ description: 'Negotiate terms with another person or their agent through Taasky:
 license: MIT-0
 compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp (Streamable HTTP, no credentials). Works best in an agent that has memory and can run on a schedule.
 metadata:
-  version: "0.3.15"
+  version: "0.4.0"
   homepage: https://taasky.ai
   openclaw:
     emoji: "🤝"
@@ -72,9 +72,10 @@ Without an account, every room you open or join gives you a `room_token`
   🦥 Amber Sloth"); never report on a different room instead.
 - **Never show it** to anyone, your human included, not even in an error
   message. Whoever has it negotiates as you. Name a room by its `name`.
-- **Reuse your human's Telegram chat**: when you open or join a new room,
+- **Keep your human's rooms together**: when you open or join a new room,
   pass any earlier `room_token` as `previous_room_token`, even one from a
-  finished room. Your human then needs no new link.
+  finished room. If they turned on Telegram, it then tells them about this
+  room too.
 
 ## Before you open a room
 
@@ -205,22 +206,23 @@ what changed: "Anna moved it from 15:00 to 16:00."
 ### Opening
 
 `negotiation_open(subject_schema, limits?, subject?, previous_room_token?)` returns
-`room_token`, `room`, `name`, `invite_url` and, if your human has not
-connected Telegram yet, `bind_url`. Then:
+`room_token`, `room`, `name`, `invite_url` and `human_url`. Then:
 
 - Save `room_token` to your memory now (see above).
 - Give `invite_url` to your human to send to the other party, or send it
   yourself if they asked you to. It expires in 72 hours.
-- If there is a `bind_url`, give it to your human **in the same message**.
-  It is not optional: nothing can be agreed until they have pressed Start in
-  the Taasky bot. One tap now, and the confirmation that comes later simply
-  arrives. For example: "Send Anna this invite: `<invite_url>`. And tap this
-  one yourself, you'll confirm the deal there: `<bind_url>`".
-- **`bind_url` is for your human only.** Never send it to the other side or
-  suggest they open it: whoever presses Start there confirms deals for your
-  side. The other side gets only `invite_url`.
-- Refer to the room by its **`name`** when you talk to your human. Telegram
-  and the web page use the same name.
+- Give `human_url` to your human **in the same message**: it is their own
+  page of this room, where they see the terms and confirm the deal. For
+  example: "Send Anna this invite: `<invite_url>`. Your page for this deal,
+  where you'll confirm it: `<human_url>`".
+- **`human_url` is for your human only.** Never send it to the other side:
+  whoever opens it answers for your side. The other side gets only
+  `invite_url`.
+- `bind_url`, if the result has one, is optional: on the page your human can
+  turn on Telegram, so they hear when something waits. Mention it once at
+  most; nothing depends on it.
+- Refer to the room by its **`name`** when you talk to your human. The page
+  and Telegram use the same name.
 - **Open with terms** when you know them: pass your opening `offer` as
   `subject`, for a meeting the exact slot, not the window your human is free
   (that goes in `limits`). The invite then shows the terms, and the other side
@@ -239,8 +241,8 @@ browser using your schema.
 Given an invite link `https://app.taasky.ai/i/<code>` (older ones are on
 `mcp.taasky.ai/i/<code>`; the code works either way), call
 `negotiation_join(invite_code, subject_schema, previous_room_token?)` with
-your own schema. Save the `room_token` it returns, and pass `bind_url` to your
-human if there is one. Read
+your own schema. Save the `room_token` it returns, and give your human
+`human_url`, their page of this room, as when opening. Read
 `peer_subject_schema` in the response to see what the other side will send.
 Usually you mirror it. If the opener already made an offer, the response has
 `turn: "yours"` and `terms_on_table`: show the terms to your human and answer
@@ -271,8 +273,8 @@ When it is your turn, pick one:
 
 When your human asked you to settle this deal and gave you their limits,
 that is your go-ahead for the moves marked "not asked", inside those limits,
-in that room only, and for asking to `approve`, since their tap in Telegram
-is the real decision. So when it is your turn in such a room, **move, then
+in that room only, and for asking to `approve`, since their yes on their
+page is the real decision. So when it is your turn in such a room, **move, then
 report**: don't end with "shall I answer?" or "I can make the next move".
 Anything outside their limits, or in a room they did not give you, goes to
 your human first.
@@ -334,13 +336,12 @@ fails with `subject_hash does not match`. Read the room again.
 
 When your human has said that these exact terms are what they want ("15:00
 works, send it", "450 and not a cent less, offer that"), send the `offer` or
-`counter` with `final: true`. Your human is asked right away, in Telegram, to
-stand by them. Once they confirm, the other side's approve of those exact
+`counter` with `final: true`. Your human is asked right away, on their page,
+to stand by them. Once they confirm, the other side's approve of those exact
 terms agrees the room: you do not come back to approve your own terms again.
 
-- The result carries `final` with `status: "pending_human"` and a `card`. If
-  it also has `confirm_url` or `bind_url`, give it to your human as with any
-  confirmation.
+- The result carries `final` with `status: "pending_human"`, a `card` and
+  `human_url`: give it to your human as with any confirmation.
   Tell them in one line that Taasky is asking them to stand by these terms.
 - Only with terms your human named or approved as they are. Don't use it for
   an opening you picked yourself from their limits, or for a compromise you
@@ -354,19 +355,11 @@ terms agrees the room: you do not come back to approve your own terms again.
 `negotiation_respond` and `negotiation_cancel` return `status: "pending_human"`
 and a `card` showing the terms field by field. Nothing has been sent yet.
 
-- **With `confirm_url`**: this Taasky server asks people on a web page
-  instead of Telegram, and nothing else tells your human a card is waiting.
-  Give them `confirm_url` now, every time, as a link they can tap, e.g. "To
-  confirm the deal for *🦊 Amber Fox*, open this: `<confirm_url>`". Each
-  confirmation has its own link: send the new one, not an earlier one. It is
-  for your human only: whoever opens it answers for your side, so never send
-  it to the other side.
-- **With `bind_url`**: your human has not pressed Start yet.
-  Give them `bind_url` now, as a link they can tap, and say it in one line,
-  e.g. "To confirm the deal for *🦊 Amber Fox*, open this and press Start:
-  `<bind_url>`". Once they press Start, the card reaches them there.
-- **With neither**: the card is already in their Telegram. Tell them
-  briefly that a confirmation is waiting and for which room.
+Every one of these results carries `human_url`, your human's page of the
+room, where the card now waits on top. Tell them in one line that a
+confirmation is waiting, for which room, and give the link, e.g. "To confirm
+the deal for *🦊 Amber Fox*, open your page: `<human_url>`". Send it every
+time, even if you sent it before: it is the one link they need.
 
 Then **stop and wait**. Don't make other moves in that room while
 `awaiting_your_human` is set. If the room changes before your human taps, the

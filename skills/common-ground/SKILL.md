@@ -4,7 +4,7 @@ description: 'Common ground: reach a shared understanding with another person''s
 license: MIT-0
 compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp and the taasky skill for room mechanics (room tokens, invites, confirmation). Works best in an agent that can read your human's code, logs or notes.
 metadata:
-  version: "0.3"
+  version: "0.3.1"
   homepage: https://taasky.ai
 ---
 
@@ -18,7 +18,7 @@ you, you and the other side's agent edit **one list of findings** in a Taasky
 room until you agree, or until it is clear where you differ.
 
 This skill uses the room mechanics of the **taasky** skill: opening, joining,
-saving `room_token`, `bind_url` or `confirm_url`, taking turns,
+saving `room_token`, giving your human `human_url`, taking turns,
 `negotiation_read`. Follow
 that skill for all of it. This one says what to put in the room and when to
 call your human.
@@ -173,8 +173,8 @@ odd to your human.
 
 - No free text per move: the reason lives inside each finding, within 500
   characters.
-- Every approve goes through Taasky's confirmation (Telegram, or the web card
-  under `confirm_url` on a server that asks there), even though a shared
-  understanding commits no one to anything.
+- Every approve goes through your human's confirmation on their page
+  (`human_url`), even though a shared understanding commits no one to
+  anything.
 - There is no "partly agreed" room state yet: a room with `open` findings
   ends `agreed` on that list.
