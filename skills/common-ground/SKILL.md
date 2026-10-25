@@ -1,10 +1,10 @@
 ---
 name: common-ground
-description: 'Common ground: reach a shared understanding with another person''s agent through Taasky: a list of findings, each agreed, disputed or still open, edited in turns until both sides see the question the same way or know exactly where they differ. Use when your human pastes someone''s analysis, proposal or list and agrees with only part of it: why something broke, which dependencies to upgrade, whether a plan works ("here is Anna''s analysis, I agree with half of it", "security wants these upgrades, some will break us, sort it out with their agent"), instead of forwarding replies back and forth. Requires the Taasky MCP server and the taasky skill.'
+description: 'Common ground: reach a shared understanding with another person''s agent through Taasky: a list of findings, each agreed, disputed or still open, edited in turns until both sides see the question the same way or know exactly where they differ. Use when your human pastes someone''s analysis, proposal or list and agrees with only part of it: why something broke, which dependencies to upgrade, whether a plan works ("here is Anna''s analysis, I agree with half of it", "security wants these upgrades, some will break us, sort it out with their agent"), instead of forwarding replies back and forth. Also when your human wants two of their own sessions to check something with each other ("check this with my Codex session", "the worktree session can't see it, ask the open one"). Requires the Taasky MCP server and the taasky skill.'
 license: MIT-0
-compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp and the taasky skill for room mechanics (room tokens, invites, confirmation). Works best in an agent that can read your human's code, logs or notes.
+compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp, or for your own sessions `npx @taasky/taasky local` (Node.js 24+), and the taasky skill for room mechanics (room tokens, invites, confirmation). Works best in an agent that can read your human's code, logs or notes.
 metadata:
-  version: "0.3.1"
+  version: "0.4.0"
   homepage: https://taasky.ai
 ---
 
@@ -22,6 +22,46 @@ saving `room_token`, giving your human `human_url`, taking turns,
 `negotiation_read`. Follow
 that skill for all of it. This one says what to put in the room and when to
 call your human.
+
+## Between your human's own sessions
+
+Sometimes both sides are the same person: a session in a worktree that hit
+its isolation and a session already open on the main checkout, Claude Code
+and Codex on the same repo, a review session and the one that wrote the
+code. Each still knows things the other doesn't, so the list works the same.
+What changes:
+
+- **Use the local server**: the MCP server `taasky-local`
+  (`http://localhost:8790/mcp`). The room stays on this machine. If its
+  tools are missing or it doesn't answer, Taasky isn't running here yet:
+  1. Ask your human once: "Start Taasky on this machine? It runs
+     `npx @taasky/taasky local` in the background, on localhost only." Start
+     nothing without their yes.
+  2. On a yes, run `npx -y @taasky/taasky local` as a background process and wait
+     until `http://localhost:8790/health` answers. If you can't run
+     commands, give your human those two words to run.
+  3. If `taasky-local` isn't among your MCP servers at all, run
+     `npx -y @taasky/taasky connect`. A server added this way, or one that was down
+     when the session started, reaches you only after a reconnect: in Claude
+     Code your human runs `/mcp` and reconnects `taasky-local`; in Codex,
+     a new session. Tell them which.
+  Use the hosted server for your own sessions only if your human says so.
+- **Your human chooses who joins.** Never send the invite yourself, not to
+  another session and not to a person, even if you can message them or can
+  guess which session knows the topic. Give your human the invite with one
+  line on what it is about, and let them paste it where they decide. You may
+  suggest a session, in words. That paste is their only relay.
+- **One report, not two.** Your human reads both sides. If you opened the
+  room, tell them what the final list says and what you conceded. If you
+  joined, say only "approved on my side" and anything you conceded that the
+  opener couldn't know.
+- **One page, one confirmation.** On the local server both seats are your
+  human, so either seat's `human_url` opens the same page, and one tap on
+  "Agree for both sessions" confirms the list for both. Only the opener
+  hands its `human_url` over; the joiner never sends its own. Each agent
+  still approves the list itself: once your human has said yes to it, your
+  approve goes straight through with no second card. If the list changes,
+  your human is asked again.
 
 ## The goal is a true picture, not agreement
 
@@ -58,6 +98,7 @@ Both sides use the same `subject_schema`. Mirror it when you join.
 ```json
 {
   "topic":      {"type": "string", "label": "Topic"},
+  "sides":      {"type": "string", "label": "Who's talking", "repeated": true},
   "findings":   {"type": "string", "label": "Findings", "repeated": true},
   "conclusion": {"type": "string", "label": "Conclusion", "optional": true},
   "next_steps": {"type": "string", "label": "Next steps", "optional": true, "repeated": true}
@@ -66,12 +107,25 @@ Both sides use the same `subject_schema`. Mirror it when you join.
 
 - `topic`: the question in one sentence ("Why Glama marks Taasky unhealthy",
   "Which of the 6 flagged dependencies we upgrade this sprint").
+- `sides`: one line per side, so your human knows who is talking. Add yours
+  in your first move and keep the other side's line as it is: what you are
+  (Claude Code, Codex), where you run (repo, worktree, branch), and in a few
+  words what you know that the other side may not. "Claude Code · taasky-portal,
+  main · wrote the plan of 25 Oct and the hypotheses page".
 - `findings`: one claim per item, with its status and reason.
-- `conclusion`: what the agreed findings add up to. Empty until they do.
+- `conclusion`: what the agreed findings add up to, in one sentence of
+  at most 25 words. It is the first thing your human reads. Empty until
+  the findings add up to something.
 - `next_steps`: who does what, one per item. Only from agreed findings.
 
-Write labels in your human's language. Every string is at most 500
-characters, so keep each finding to one claim and one reason.
+Write labels in your human's language. Your human reads the whole list
+before saying yes, so keep it short: a claim in about fifteen words, a
+reason or source in about ten, and no more than eight findings. Merge or drop
+findings that don't change the conclusion. The hard limit is 500 characters
+per string.
+
+Write like a colleague at a standup: the outcome first, who thinks what,
+plain team words. No "alignment", "stakeholders" or "action items".
 
 **Each finding** is one line in this form:
 

@@ -18,7 +18,9 @@ This plugin gives an agent three things:
   agents of different people that each know part of a problem. They keep one list of findings,
   each agreed, disputed or open, until both sides see the question the same
   way or know exactly where they differ. The agent tells its human what it
-  conceded, and the human approves the list on their page.
+  conceded, and the human approves the list on their page. It also works
+  between your own sessions, Claude Code and Codex say, on Taasky running on
+  your machine: `npx @taasky/taasky local`. One page, one yes for both.
 
 ## Install
 
