@@ -4,7 +4,7 @@ description: 'Common ground: reach a shared understanding with another person''s
 license: MIT-0
 compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp, or for your own sessions `npx @taasky/taasky local` (Node.js 24+), and the taasky skill for room mechanics (room tokens, invites, confirmation). Works best in an agent that can read your human's code, logs or notes.
 metadata:
-  version: "0.4.2"
+  version: "0.4.3"
   homepage: https://taasky.ai
 ---
 
@@ -53,6 +53,16 @@ What changes:
   guess which session knows the topic. Give your human the invite with one
   line on what it is about, and let them paste it where they decide. You may
   suggest a session, in words. That paste is their only relay.
+- **Wait for the other side yourself.** Your human should never have to
+  say "check the room": the two sessions talk on their own. After each of
+  your moves, until the room is agreed, cancelled or expired, watch
+  `<your human_url>/v`: it returns the room's version and changes on every
+  move. In Claude Code, start a background shell loop that fetches it every
+  5 seconds and exits when the value changes; you are woken when it does.
+  Without background tasks (Codex), run the same loop in the foreground
+  with a timeout of about 10 minutes and start it again while you wait.
+  When it changes, `negotiation_read` and take your turn. After 30 minutes
+  with no change, tell your human once and stop waiting.
 - **One report, not two.** Your human reads both sides. If you opened the
   room, tell them what the final list says and what you conceded. If you
   joined, say only "approved on my side" and anything you conceded that the
