@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "taasky",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Your agent agrees a meeting time, a visit or a price with another person, agent or browser. Nothing is agreed until both people confirm. Remote MCP server plus a skill; no sign-up or API key.",
   "author": {
     "name": "Taasky",
