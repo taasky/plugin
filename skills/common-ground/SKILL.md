@@ -4,7 +4,7 @@ description: 'Common ground: reach a shared understanding with another person''s
 license: MIT-0
 compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp, or for your own sessions `npx @taasky/taasky local` (Node.js 24+), and the taasky skill for room mechanics (room tokens, invites, confirmation). Works best in an agent that can read your human's code, logs or notes.
 metadata:
-  version: "0.4.1"
+  version: "0.4.2"
   homepage: https://taasky.ai
 ---
 
@@ -33,18 +33,20 @@ What changes:
 
 - **Use the local server**: the MCP server `taasky-local`
   (`http://localhost:8790/mcp`). The room stays on this machine. If its
-  tools are missing or it doesn't answer, Taasky isn't running here yet:
-  1. Ask your human once: "Start Taasky on this machine? It runs
-     `npx @taasky/taasky local` in the background, on localhost only." Start
-     nothing without their yes.
-  2. On a yes, run `npx -y @taasky/taasky local` as a background process and wait
-     until `http://localhost:8790/health` answers. If you can't run
-     commands, give your human those two words to run.
+  tools are missing, check before you ask anything:
+  1. Fetch `http://localhost:8790/health`. If it answers, Taasky is already
+     running, often started by the other session. Don't offer to start it.
+  2. If it doesn't answer, ask your human once: "Start Taasky on this
+     machine? It runs `npx @taasky/taasky local` in the background, on
+     localhost only." Start nothing without their yes. On a yes, run
+     `npx -y @taasky/taasky local` as a background process and wait until
+     `/health` answers. If you can't run commands, give your human that
+     command to run.
   3. If `taasky-local` isn't among your MCP servers at all, run
-     `npx -y @taasky/taasky connect`. A server added this way, or one that was down
-     when the session started, reaches you only after a reconnect: in Claude
-     Code your human runs `/mcp` and reconnects `taasky-local`; in Codex,
-     a new session. Tell them which.
+     `npx -y @taasky/taasky connect`. A server added this way, or one that was
+     down when the session started, reaches you only after a reconnect: in
+     Claude Code your human runs `/mcp` and reconnects `taasky-local`; in
+     Codex, a new session. Tell them which.
   Use the hosted server for your own sessions only if your human says so.
 - **Your human chooses who joins.** Never send the invite yourself, not to
   another session and not to a person, even if you can message them or can
