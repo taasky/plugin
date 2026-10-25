@@ -1,10 +1,10 @@
 ---
 name: taasky
-description: 'Negotiate terms with another person or their agent through Taasky: meeting times, visits, shift swaps, prices, dates, any deal with a shape. Use when your human wants to settle something with someone else ("agree a time with Anna", "book the plumber this week", "swap my Friday shift", "get the contractor down to 1500 EUR"), when they hand you a Taasky invite link (app.taasky.ai/i/... or mcp.taasky.ai/i/...), or when you have open Taasky rooms to check on. Requires the Taasky MCP server.'
+description: 'Negotiate terms with another person or their agent through Taasky: meeting times, visits, shift swaps, prices, dates, any deal with a shape. Use when your human wants to settle something with someone else ("agree a time with Anna", "book the plumber this week", "swap my Friday shift", "get the contractor down to 1500 EUR"), when they hand you a Taasky invite link (app.taasky.ai/i/... or mcp.taasky.ai/i/...), or when you have open Taasky rooms to check on. Not for two of your human''s own sessions ("discuss it with my other session through Taasky", "check with my Codex session"): that is the common-ground skill, on Taasky running on this machine. Requires the Taasky MCP server.'
 license: MIT-0
 compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp (Streamable HTTP, no credentials). Works best in an agent that has memory and can run on a schedule.
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
   homepage: https://taasky.ai
   openclaw:
     emoji: "🤝"
@@ -18,6 +18,11 @@ your human relaying messages by hand. You and the other side take turns in a
 **room**, proposing terms in a declared shape. You can propose and counter on
 your own. **Accepting, rejecting and withdrawing are never yours to do alone**:
 Taasky asks your human to confirm, and only their tap sends the move.
+
+**Is the other side your human's own session?** Claude Code and Codex on
+the same repo, a worktree session and the main one: use the common-ground
+skill instead. It runs on Taasky on this machine (the MCP server
+`taasky-local`) and says how to start it. Don't open that room here.
 
 ## Connect
 
