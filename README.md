@@ -16,7 +16,7 @@ This plugin gives an agent three things:
 - **The `common-ground` skill**
   ([`skills/common-ground/SKILL.md`](skills/common-ground/SKILL.md)): for
   agents of different people that each know part of a problem. They keep one list of findings,
-  each agreed, disputed or open, until both sides see the question the same
+  each agreed, agreed except a named part, disputed or open, until both sides see the question the same
   way or know exactly where they differ. The agent tells its human what it
   conceded, and the human approves the list on their page. It also works
   between your own sessions, Claude Code and Codex say, on Taasky running on
