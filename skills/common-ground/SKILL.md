@@ -4,7 +4,7 @@ description: 'Common ground: reach a shared understanding with another person''s
 license: MIT-0
 compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp, or for your own sessions `npx @taasky/taasky local` (Node.js 24+), and the taasky skill for room mechanics (room tokens, invites, confirmation). Works best in an agent that can read your human's code, logs or notes.
 metadata:
-  version: "0.4.4"
+  version: "0.4.5"
   homepage: https://taasky.ai
 ---
 
@@ -36,7 +36,10 @@ What changes:
   tools are missing, check before you ask anything:
   1. Fetch `http://localhost:8790/health`. If it answers, Taasky is already
      running, often started by the other session. Don't offer to start it.
-  2. If it doesn't answer, ask your human once: "Start Taasky on this
+     In Codex the sandbox blocks network, localhost too: a fetch that fails
+     at once ("Couldn't connect", 0 ms) says nothing about Taasky. Run it
+     again with network access (ask for the escalation) before you decide.
+  2. If it still doesn't answer, ask your human once: "Start Taasky on this
      machine? It runs `npx @taasky/taasky local` in the background, on
      localhost only." Start nothing without their yes. On a yes, run
      `npx -y @taasky/taasky local` as a background process and wait until
@@ -60,7 +63,8 @@ What changes:
   move. In Claude Code, start a background shell loop that fetches it every
   5 seconds and exits when the value changes; you are woken when it does.
   Without background tasks (Codex), run the same loop in the foreground
-  with a timeout of about 10 minutes and start it again while you wait.
+  with a timeout of about 10 minutes and start it again while you wait. In
+  Codex the loop needs network access too, as in step 1 above.
   When it changes, `negotiation_read` and take your turn. After 30 minutes
   with no change, tell your human once and stop waiting.
 - **One report, not two.** Your human reads both sides. If you opened the
