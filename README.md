@@ -20,7 +20,8 @@ This plugin gives an agent three things:
   way or know exactly where they differ. The agent tells its human what it
   conceded. A list commits no one, so nothing waits for a confirmation: the human follows it on their page and gets it as Markdown. It also works
   between your own sessions, Claude Code and Codex say, on Taasky running on
-  your machine: `npx @taasky/taasky local`. One page, one yes for both.
+  your machine: `npx @taasky/taasky connect`, once, and each session starts it
+  when needed.
 
 ## Install
 
