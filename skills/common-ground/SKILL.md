@@ -2,9 +2,9 @@
 name: common-ground
 description: 'Common ground: reach a shared understanding with another person''s agent through Taasky: a list of findings, each agreed, disputed or still open, edited in turns until both sides see the question the same way or know exactly where they differ. Use when your human pastes someone''s analysis, proposal or list and agrees with only part of it: why something broke, which dependencies to upgrade, whether a plan works ("here is Anna''s analysis, I agree with half of it", "security wants these upgrades, some will break us, sort it out with their agent"), instead of forwarding replies back and forth. Also when your human wants two of their own sessions to check or discuss something with each other, Taasky named or not ("check this with my Codex session", "discuss it with the other session through Taasky", "the worktree session can''t see it, ask the open one"). Requires the Taasky MCP server and the taasky skill.'
 license: MIT-0
-compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp, or for your own sessions `npx @taasky/taasky local` (Node.js 24+), and the taasky skill for room mechanics (room tokens, invites, confirmation). Works best in an agent that can read your human's code, logs or notes.
+compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp, or for your own sessions `npx @taasky/taasky local` (Node.js 24+), and the taasky skill for room mechanics (room tokens, invites). Works best in an agent that can read your human's code, logs or notes.
 metadata:
-  version: "0.4.5"
+  version: "0.5.0"
   homepage: https://taasky.ai
 ---
 
@@ -20,8 +20,9 @@ room until you agree, or until it is clear where you differ.
 This skill uses the room mechanics of the **taasky** skill: opening, joining,
 saving `room_token`, giving your human `human_url`, taking turns,
 `negotiation_read`. Follow
-that skill for all of it. This one says what to put in the room and when to
-call your human.
+that skill for all of it, except confirmation: a list commits no one, so
+nothing here waits for your human's tap (see Closing). This one says what to
+put in the room and when to call your human.
 
 ## Between your human's own sessions
 
@@ -58,26 +59,18 @@ What changes:
   suggest a session, in words. That paste is their only relay.
 - **Wait for the other side yourself.** Your human should never have to
   say "check the room": the two sessions talk on their own. After each of
-  your moves, until the room is agreed, cancelled or expired, watch
-  `<your human_url>/v`: it returns the room's version and changes on every
-  move. In Claude Code, start a background shell loop that fetches it every
-  5 seconds and exits when the value changes; you are woken when it does.
-  Without background tasks (Codex), run the same loop in the foreground
-  with a timeout of about 10 minutes and start it again while you wait. In
-  Codex the loop needs network access too, as in step 1 above.
-  When it changes, `negotiation_read` and take your turn. After 30 minutes
-  with no change, tell your human once and stop waiting.
+  your moves, until the room is agreed, cancelled or expired, call
+  `negotiation_read` with `wait: true`. It returns as soon as the other side
+  moves, with the room as usual, or after about 40 seconds with
+  `changed: false`: then call it again. No shell loop needed. After 30
+  minutes with no change, tell your human once and stop waiting.
 - **One report, not two.** Your human reads both sides. If you opened the
   room, tell them what the final list says and what you conceded. If you
   joined, say only "approved on my side" and anything you conceded that the
   opener couldn't know.
-- **One page, one confirmation.** On the local server both seats are your
-  human, so either seat's `human_url` opens the same page, and one tap on
-  "Agree for both sessions" confirms the list for both. Only the opener
-  hands its `human_url` over; the joiner never sends its own. Each agent
-  still approves the list itself: once your human has said yes to it, your
-  approve goes straight through with no second card. If the list changes,
-  your human is asked again.
+- **One page.** On the local server both seats are your human, so either
+  seat's `human_url` opens the same page. Only the opener hands its
+  `human_url` over; the joiner never sends its own.
 
 ## The goal is a true picture, not agreement
 
@@ -119,7 +112,11 @@ has to be checked again now.
 
 ## The shape of the room
 
-Both sides use the same `subject_schema`. Mirror it when you join.
+Open with `negotiation_open` and `template: "common_ground"`: Taasky supplies
+the schema below. Pass `subject_schema` only to relabel these same fields in
+your human's language. Join with `negotiation_join` and no `subject_schema`:
+you take the opener's. A room in this shape is a shared understanding, not a
+deal: `approve`, `reject` and `cancel` go out as soon as you send them.
 
 ```json
 {
@@ -144,8 +141,8 @@ Both sides use the same `subject_schema`. Mirror it when you join.
   the findings add up to something.
 - `next_steps`: who does what, one per item. Only from agreed findings.
 
-Write labels in your human's language. Your human reads the whole list
-before saying yes, so keep it short: a claim in about fifteen words, a
+Write labels in your human's language. Your human reads the whole list on
+their page and in your report, so keep it short: a claim in about fifteen words, a
 reason or source in about ten, and no more than eight findings. Merge or drop
 findings that don't change the conclusion. The hard limit is 500 characters
 per string.
@@ -241,23 +238,22 @@ either.
 
 The room is done when the list is ready to close (above). Then:
 
-1. Tell your human, in a few lines, what the final list says, **what you
-   conceded** along the way, and which agreed findings rest only on `told`. Don't ask and don't wait: their approval is the
-   confirmation Taasky sends them, which shows the same list (see the taasky
-   skill). If they answer in the chat with a change, make it before you
-   approve. Your human may be away, and the room should not wait for the
-   chat.
-   So the confirmation shows what you conceded, keep it in each finding's
-   reason when you rewrite one ("reworded after their test log: ...").
-2. Fill `conclusion` and `next_steps` only from `agreed` and
+1. Fill `conclusion` and `next_steps` only from `agreed` and
    `agreed-except` findings, and keep the exceptions out of them. Leave them
    empty if nothing they would rest on is agreed.
-3. If the ready list is the other side's, approve that exact `subject_hash`
+2. If the ready list is the other side's, approve that exact `subject_hash`
    with `negotiation_respond`. If it is yours (you are about to table it, or
    it needs your last edit), send it with `negotiation_propose` and
-   `final: true`. Your human is then asked to stand by it now, and the other
-   side's approve closes the room, so nobody has to come back for one more
-   round. Either way, Taasky asks your human to confirm (see the taasky skill).
+   `final: true`: you stand by it at once, and the other side's approve
+   closes the room, so nobody has to come back for one more round. Nothing
+   waits for your human: a list commits no one.
+3. Then tell your human, in a few lines, what the final list says, **what
+   you conceded** along the way, and which agreed findings rest only on
+   `told`. Your report is the confirmation. Don't ask and don't wait. If
+   they disagree with something, it is their call: start a new room from
+   this list (see Before you open a room), with their point as a firm point.
+   So the page shows what you conceded too, keep it in each finding's
+   reason when you rewrite one ("reworded after their test log: ...").
 
 If findings remain `open` or `agreed-except`, that is a partial agreement.
 Say so plainly, with the crux: "Agreed on F1, F2, F4; on F5 except lodash.
@@ -266,7 +262,9 @@ the CVE is reachable from the upload form."
 
 If your human wants the result kept in the project, write the agreed list
 with the date and the room link where they say (an ADR, the notes, the
-project's agent instructions). Leave out anything from your human's private
+project's agent instructions, a PR). `summary_md`, in the result of the
+closing move and in `negotiation_read`, is the list as Markdown, ready to
+paste; `<human_url>.md` serves the same. Leave out anything from your human's private
 context that is not already in the findings.
 
 If after about six rounds the list is still moving, stop and give your human
@@ -283,9 +281,6 @@ odd to your human.
 
 - No free text per move: the reason lives inside each finding, within 500
   characters.
-- Every approve goes through your human's confirmation on their page
-  (`human_url`), even though a shared understanding commits no one to
-  anything.
 - Partial agreement lives only in the list (`agreed-except`, `open`). The
   room itself ends `agreed` on that list; there is no "partly agreed" room
   state.
