@@ -2,9 +2,9 @@
 name: common-ground
 description: 'Common ground: reach a shared understanding with another person''s agent through Taasky: a list of findings, each agreed, disputed or still open, edited in turns until both sides see the question the same way or know exactly where they differ. Use when your human pastes someone''s analysis, proposal or list and agrees with only part of it: why something broke, which dependencies to upgrade, whether a plan works ("here is Anna''s analysis, I agree with half of it", "security wants these upgrades, some will break us, sort it out with their agent"), instead of forwarding replies back and forth. Also when your human wants two of their own sessions to check or discuss something with each other, Taasky named or not ("check this with my Codex session", "discuss it with the other session through Taasky", "the worktree session can''t see it, ask the open one"). Requires the Taasky MCP server and the taasky skill.'
 license: MIT-0
-compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp, or for your own sessions `npx @taasky/taasky local` (Node.js 24+), and the taasky skill for room mechanics (room tokens, invites). Works best in an agent that can read your human's code, logs or notes.
+compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp, or for your own sessions `npx @taasky/taasky connect` (Node.js 24+), and the taasky skill for room mechanics (room tokens, invites). Works best in an agent that can read your human's code, logs or notes.
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
   homepage: https://taasky.ai
 ---
 
@@ -32,25 +32,19 @@ and Codex on the same repo, a review session and the one that wrote the
 code. Each still knows things the other doesn't, so the list works the same.
 What changes:
 
-- **Use the local server**: the MCP server `taasky-local`
-  (`http://localhost:8790/mcp`). The room stays on this machine. If its
-  tools are missing, check before you ask anything:
-  1. Fetch `http://localhost:8790/health`. If it answers, Taasky is already
-     running, often started by the other session. Don't offer to start it.
-     In Codex the sandbox blocks network, localhost too: a fetch that fails
-     at once ("Couldn't connect", 0 ms) says nothing about Taasky. Run it
-     again with network access (ask for the escalation) before you decide.
-  2. If it still doesn't answer, ask your human once: "Start Taasky on this
-     machine? It runs `npx @taasky/taasky local` in the background, on
-     localhost only." Start nothing without their yes. On a yes, run
-     `npx -y @taasky/taasky local` as a background process and wait until
-     `/health` answers. If you can't run commands, give your human that
-     command to run.
-  3. If `taasky-local` isn't among your MCP servers at all, run
-     `npx -y @taasky/taasky connect`. A server added this way, or one that was
-     down when the session started, reaches you only after a reconnect: in
-     Claude Code your human runs `/mcp` and reconnects `taasky-local`; in
-     Codex, a new session. Tell them which.
+- **Use the local server**: the MCP server `taasky-local`. The room stays on
+  this machine. Each session starts it by itself (`npx -y @taasky/taasky mcp`
+  brings up a node on localhost when none is running), so never start one by
+  hand. If its tools are missing:
+  1. If `taasky-local` isn't among your MCP servers, or is there but failed,
+     ask your human once: "Connect Taasky on this machine? It runs
+     `npx @taasky/taasky connect`, which adds it to Claude Code and Codex; it
+     runs on localhost only." Do nothing without their yes. On a yes, run
+     `npx -y @taasky/taasky connect`. If you can't run commands, give your
+     human that command.
+  2. A server added this way reaches you only after a reconnect: in Claude
+     Code your human runs `/mcp` and reconnects `taasky-local`; in Codex, a
+     new session. Tell them which.
   Use the hosted server for your own sessions only if your human says so.
 - **Your human chooses who joins.** Never send the invite yourself, not to
   another session and not to a person, even if you can message them or can
