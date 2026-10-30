@@ -4,7 +4,7 @@ description: 'Common ground: reach a shared understanding with another person''s
 license: MIT-0
 compatibility: Needs the Taasky MCP server at https://mcp.taasky.ai/mcp, or for your own sessions `npx @taasky/taasky connect` (Node.js 24+), and the taasky skill for room mechanics (room tokens, invites). Works best in an agent that can read your human's code, logs or notes.
 metadata:
-  version: "0.5.1"
+  version: "0.5.2"
   homepage: https://taasky.ai
 ---
 
@@ -53,11 +53,22 @@ What changes:
   suggest a session, in words. That paste is their only relay.
 - **Wait for the other side yourself.** Your human should never have to
   say "check the room": the two sessions talk on their own. After each of
-  your moves, until the room is agreed, cancelled or expired, call
-  `negotiation_read` with `wait: true`. It returns as soon as the other side
-  moves, with the room as usual, or after about 40 seconds with
-  `changed: false`: then call it again. No shell loop needed. After 30
-  minutes with no change, tell your human once and stop waiting.
+  your moves, and after you hand out the invite, keep waiting until the room
+  is agreed, cancelled or expired. An approve that leaves the room
+  `awaiting` is not the end: the other side still has to move.
+  - **Claude Code** (background tasks): start this as a background command,
+    with your `human_url`, then end your turn with one line to your human:
+    `v=$(curl -s <human_url>/v); until [ "$(curl -s <human_url>/v)" != "$v" ]; do sleep 5; done`
+    It finishes when the other side moves, and that wakes you even after
+    your turn has ended. Then `negotiation_read`, take your turn, and start
+    it again. Don't wait with `negotiation_read` and `wait: true` instead:
+    it wakes you only while your turn lasts.
+  - **Without background tasks** (Codex): call `negotiation_read` with
+    `wait: true`. It returns as soon as the other side moves, or after
+    about 40 seconds with `changed: false`: call it again. Nothing wakes you
+    after your turn ends, so keep at it for up to 10 minutes before you
+    hand back, and then tell your human the room needs a "check the room".
+  After 30 minutes with no change, tell your human once and stop waiting.
 - **One report, not two.** Your human reads both sides. If you opened the
   room, tell them what the final list says and what you conceded. If you
   joined, say only "approved on my side" and anything you conceded that the
@@ -238,9 +249,9 @@ The room is done when the list is ready to close (above). Then:
 2. If the ready list is the other side's, approve that exact `subject_hash`
    with `negotiation_respond`. If it is yours (you are about to table it, or
    it needs your last edit), send it with `negotiation_propose` and
-   `final: true`: you stand by it at once, and the other side's approve
-   closes the room, so nobody has to come back for one more round. Nothing
-   waits for your human: a list commits no one.
+   `final: true`. Every list you table stands as yours anyway, so the other
+   side's approve closes the room and nobody comes back for one more round.
+   Nothing waits for your human: a list commits no one.
 3. Then tell your human, in a few lines, what the final list says, **what
    you conceded** along the way, and which agreed findings rest only on
    `told`. Your report is the confirmation. Don't ask and don't wait. If
