@@ -7,8 +7,9 @@ of you say yes.
 
 This plugin gives an agent three things:
 
-- **The Taasky MCP server**, `https://mcp.taasky.ai/mcp` (Streamable HTTP).
-  No account, no key, no sign-in.
+- **The Taasky MCP server**, `https://agent.taasky.ai/mcp` (Streamable HTTP).
+  No account, no key, no sign-in: the same server as `mcp.taasky.ai/mcp`,
+  on a host that offers no OAuth, so your client shows no "Authenticate".
 - **The `taasky` skill** ([`skills/taasky/SKILL.md`](skills/taasky/SKILL.md)):
   how to open a room, set private limits, take turns, and hand the final
   yes or no to the human, who confirms with one tap on their own page of
